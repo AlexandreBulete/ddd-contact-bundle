@@ -1,0 +1,7 @@
+contact:
+    form:
+        name_blank: Indiquez votre nom.
+        email_blank: Indiquez votre adresse e-mail, pour la réponse.
+        email_invalid: Cette adresse e-mail ne semble pas valide.
+        message_blank: Votre message est vide.
+        too_many: "Plusieurs messages viennent d'être envoyés depuis votre connexion. Réessayez un peu plus tard."

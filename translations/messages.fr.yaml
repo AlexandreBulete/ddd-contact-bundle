@@ -1,0 +1,43 @@
+contact:
+    menu:
+        root: Contact
+        messages: Messages
+        settings: Réglages
+    message:
+        index: Messages
+        sender_name: Nom
+        sender_email: E-mail
+        subject: Sujet
+        body: Message
+        received_at: Reçu le
+        status: État
+        status_new: Nouveau
+        status_read: Lu
+        status_archived: Archivé
+        spam: Indésirable
+        spam_help: "Cochée à l'arrivée quand un contrôle anti-spam a douté. Décochez-la si le message est légitime."
+        open: Lire
+    settings:
+        index: Réglages du contact
+        forward_to: Recevoir une copie à
+        forward_to_help: "Chaque message reçu (hors indésirables) y est envoyé en entier, avec l'expéditeur en adresse de réponse. Vide : aucune copie. Pour être prévenu sans copie, abonnez-vous à « Contact : message reçu » dans les notifications."
+    form:
+        name: Nom
+        email: E-mail
+        subject: Sujet
+        message: Message
+        trap: Ne pas remplir ce champ
+        send: Envoyer
+    mail:
+        subject: "[Contact] %subject%"
+        no_subject: Message via le formulaire du site
+        body: |
+            %name% <%email%> a écrit via le formulaire de contact :
+
+            %body%
+
+            — Répondez directement à ce mail pour lui répondre.
+    notification:
+        subject: Nouveau message via le formulaire de contact
+        body: Un visiteur a écrit via le formulaire de contact du site. Le message est à lire dans le back-office.
+        body_with_link: "Un visiteur a écrit via le formulaire de contact du site. Le lire : %url%"

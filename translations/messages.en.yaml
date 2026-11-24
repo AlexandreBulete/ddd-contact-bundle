@@ -1,0 +1,43 @@
+contact:
+    menu:
+        root: Contact
+        messages: Messages
+        settings: Settings
+    message:
+        index: Messages
+        sender_name: Name
+        sender_email: Email
+        subject: Subject
+        body: Message
+        received_at: Received
+        status: Status
+        status_new: New
+        status_read: Read
+        status_archived: Archived
+        spam: Spam
+        spam_help: "Ticked on arrival when a spam check had doubts. Untick it if the message is genuine."
+        open: Read
+    settings:
+        index: Contact settings
+        forward_to: Send a copy to
+        forward_to_help: "Every message received (spam aside) is sent there in full, the sender as reply-to address. Empty: no copy. To be told without a copy, subscribe to \"Contact: message received\" in the notifications."
+    form:
+        name: Name
+        email: Email
+        subject: Subject
+        message: Message
+        trap: Leave this field empty
+        send: Send
+    mail:
+        subject: "[Contact] %subject%"
+        no_subject: Message from the website form
+        body: |
+            %name% <%email%> wrote through the contact form:
+
+            %body%
+
+            — Reply to this email to answer them.
+    notification:
+        subject: New message through the contact form
+        body: A visitor wrote through the website contact form. The message is to be read in the back office.
+        body_with_link: "A visitor wrote through the website contact form. Read it: %url%"

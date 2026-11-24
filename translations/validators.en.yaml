@@ -1,0 +1,7 @@
+contact:
+    form:
+        name_blank: Please give your name.
+        email_blank: Please give your email address, for the reply.
+        email_invalid: This email address does not look valid.
+        message_blank: Your message is empty.
+        too_many: Several messages were just sent from your connection. Please try again a little later.
