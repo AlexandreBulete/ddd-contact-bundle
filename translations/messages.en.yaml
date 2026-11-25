@@ -1,4 +1,10 @@
 contact:
+    ui:
+        messages: Messages
+        message: message
+        edit_message: Edit message
+        settings: Form settings
+        edit_settings: Contact form settings
     menu:
         root: Contact
         messages: Messages
