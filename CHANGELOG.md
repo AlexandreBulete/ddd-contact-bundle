@@ -1,3 +1,12 @@
+## [1.1.0] - 2026-11-26
+
+### 📚 Documentation
+
+- Update CHANGELOG.md for 1.0.1
+
+### 🚜 Refactor
+
+- Spam checks from ddd-antispam-bundle
 ## [1.0.1] - 2026-11-25
 
 ### 🐛 Bug Fixes
