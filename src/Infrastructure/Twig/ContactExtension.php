@@ -15,7 +15,7 @@ use Twig\TwigFunction;
 final class ContactExtension extends AbstractExtension
 {
     public function __construct(
-        #[Autowire(param: 'contact.spam.recaptcha.site_key')]
+        #[Autowire(param: 'antispam.recaptcha.site_key')]
         private readonly ?string $recaptchaSiteKey = null,
     ) {}
 

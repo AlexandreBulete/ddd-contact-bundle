@@ -32,10 +32,7 @@ return static function (ContainerConfigurator $container): void {
             $src . '/Infrastructure/Sylius',
             $src . '/Infrastructure/Symfony/Form/Admin',
             $src . '/Infrastructure/Notification',
-            $src . '/Infrastructure/Spam/RecaptchaVerifier.php',
             // Data, not services.
-            $src . '/Infrastructure/Spam/Submission.php',
-            $src . '/Infrastructure/Spam/Verdict.php',
             $src . '/Infrastructure/Symfony/ContactOutcome.php',
             $src . '/Infrastructure/Symfony/Form/ContactFormData.php',
         ]);

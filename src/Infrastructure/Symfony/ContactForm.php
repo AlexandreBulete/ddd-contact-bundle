@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace AlexandreBulete\DddContactBundle\Infrastructure\Symfony;
 
+use AlexandreBulete\DddAntispamBundle\SpamGuard;
+use AlexandreBulete\DddAntispamBundle\SpamPolicy;
+use AlexandreBulete\DddAntispamBundle\Submission;
+use AlexandreBulete\DddAntispamBundle\Verdict;
 use AlexandreBulete\DddContactBundle\Application\Command\ReceiveContactMessage\ReceiveContactMessageCommand;
 use AlexandreBulete\DddContactBundle\Domain\ValueObject\ContactMessageId;
-use AlexandreBulete\DddContactBundle\Infrastructure\Spam\Submission;
-use AlexandreBulete\DddContactBundle\Infrastructure\Spam\SubmissionGuard;
-use AlexandreBulete\DddContactBundle\Infrastructure\Spam\Verdict;
 use AlexandreBulete\DddContactBundle\Infrastructure\Symfony\Form\ContactFormData;
 use AlexandreBulete\DddContactBundle\Infrastructure\Symfony\Form\ContactFormType;
 use AlexandreBulete\DddFoundation\Application\Command\CommandBusInterface;
@@ -17,6 +18,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -30,14 +32,25 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final readonly class ContactForm
 {
+    /** Signs the form's timing token and names its reCAPTCHA action. */
+    public const string PURPOSE = 'contact';
+
+    private SpamPolicy $policy;
+
     public function __construct(
         private FormFactoryInterface $forms,
-        private SubmissionGuard $guard,
+        private SpamGuard $guard,
         private CommandBusInterface $commandBus,
         private TranslatorInterface $translator,
-        #[Autowire(param: 'contact.spam.recaptcha.site_key')]
-        private ?string $recaptchaSiteKey = null,
-    ) {}
+        #[Autowire(service: 'limiter.contact_form')]
+        RateLimiterFactoryInterface $limiter,
+        #[Autowire(param: 'contact.spam.min_seconds')]
+        int $minSeconds,
+        #[Autowire(param: 'contact.spam.max_age')]
+        int $maxAge,
+    ) {
+        $this->policy = new SpamPolicy(self::PURPOSE, $limiter, $minSeconds, $maxAge);
+    }
 
     /**
      * @param array<string, mixed> $options
@@ -46,7 +59,7 @@ final readonly class ContactForm
      */
     public function create(array $options = []): FormInterface
     {
-        return $this->forms->create(ContactFormType::class, new ContactFormData(), $options + ['recaptcha' => $this->recaptchaSiteKey !== null]);
+        return $this->forms->create(ContactFormType::class, new ContactFormData(), $options);
     }
 
     /**
@@ -62,12 +75,7 @@ final readonly class ContactForm
             return ContactOutcome::Invalid;
         }
 
-        $verdict = $this->guard->judge(new Submission(
-            trap: self::field($form, 'website'),
-            timingToken: self::field($form, 'issued'),
-            clientIp: $request->getClientIp(),
-            recaptchaToken: self::field($form, 'recaptcha'),
-        ));
+        $verdict = $this->guard->judge(Submission::fromForm($form->get('antispam'), $request), $this->policy);
         if ($verdict === Verdict::TooMany) {
             $form->addError(new FormError($this->translator->trans('contact.form.too_many', [], 'validators')));
 
@@ -89,18 +97,5 @@ final readonly class ContactForm
         ));
 
         return ContactOutcome::Sent;
-    }
-
-    /**
-     * @param FormInterface<mixed> $form
-     */
-    private static function field(FormInterface $form, string $name): ?string
-    {
-        if (!$form->has($name)) {
-            return null;
-        }
-        $value = $form->get($name)->getData();
-
-        return is_string($value) ? $value : null;
     }
 }

@@ -53,13 +53,16 @@ public function __invoke(Request $request, ContactForm $contact): Response
 ```
 
 Render the form as you like; keep `form_rest(form)` (hidden fields) and, when
-reCAPTCHA is enabled, `{{ include('@DddContact/recaptcha.html.twig') }}` after
+reCAPTCHA is enabled, `{{ include('@DddAntispam/recaptcha.html.twig') }}` after
 it. `handle()` answers `Pending`, `Invalid`, `TooMany` (an error is on the
 form) or `Sent`.
 
 ## Spam
 
-On by default, nothing sent to a third party:
+The checks come from
+[ddd-antispam-bundle](https://github.com/AlexandreBulete/ddd-antispam-bundle),
+with the contact form's own limits. On by default, nothing sent to a third
+party:
 
 - a **trap field**, hidden from people, that robots fill;
 - a **minimal delay** between showing the form and sending it, carried by a
@@ -95,7 +98,7 @@ contact:
         min_seconds: 3
         max_age: 86400
         rate_limit: { limit: 5, interval: '1 hour' }
-        recaptcha:
+        recaptcha:                         # or under antispam.recaptcha, for every form
             enabled: false
             site_key: '%env(RECAPTCHA_SITE_KEY)%'
             secret: '%env(RECAPTCHA_SECRET)%'

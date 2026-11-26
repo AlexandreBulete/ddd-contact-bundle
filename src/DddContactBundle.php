@@ -6,7 +6,6 @@ namespace AlexandreBulete\DddContactBundle;
 
 use AlexandreBulete\DddContactBundle\Infrastructure\Doctrine\Type\ContactMessageIdType;
 use AlexandreBulete\DddContactBundle\Infrastructure\Notification\NotifyContactMessage;
-use AlexandreBulete\DddContactBundle\Infrastructure\Spam\RecaptchaVerifier;
 use AlexandreBulete\DddNotificationBundle\DddNotificationBundle;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
@@ -102,21 +101,13 @@ final class DddContactBundle extends AbstractBundle
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         /** @var ContactConfig $config */
-        $recaptcha = $config['spam']['recaptcha'];
         $container->parameters()
             ->set('contact.mail.from', $config['mail']['from'])
             ->set('contact.spam.min_seconds', $config['spam']['min_seconds'])
             ->set('contact.spam.max_age', $config['spam']['max_age'])
-            ->set('contact.spam.recaptcha.site_key', $recaptcha['enabled'] ? $recaptcha['site_key'] : null)
             ->set('contact.admin.grid_limits', $config['admin']['grid_limits']);
 
         $container->import($this->getPath() . '/config/services.php');
-        if ($recaptcha['enabled']) {
-            $container->services()->set(RecaptchaVerifier::class)
-                ->autowire()
-                ->arg('$secret', $recaptcha['secret'])
-                ->arg('$minScore', $recaptcha['min_score']);
-        }
         if ($config['admin']['enabled']) {
             $container->import($this->getPath() . '/config/services_admin.php');
         }
@@ -143,6 +134,11 @@ final class DddContactBundle extends AbstractBundle
             $spam = $config['spam'] ?? null;
             if (is_array($spam) && is_array($spam['rate_limit'] ?? null)) {
                 $rateLimit = array_merge($rateLimit, array_intersect_key($spam['rate_limit'], $rateLimit));
+            }
+            // reCAPTCHA is the site's, not the form's: ddd-antispam-bundle
+            // holds it. Declared here, it still works, for every form.
+            if (is_array($spam) && is_array($spam['recaptcha'] ?? null)) {
+                $builder->prependExtensionConfig('antispam', ['recaptcha' => $spam['recaptcha']]);
             }
         }
 

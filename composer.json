@@ -1,6 +1,6 @@
 {
   "name": "alexandrebulete/ddd-contact-bundle",
-  "description": "A contact form as a reusable DDD Bounded Context: messages kept and read in a Sylius back office, spam checks without third party (reCAPTCHA v3 optional), notices through ddd-notification-bundle.",
+  "description": "A contact form as a reusable DDD Bounded Context: messages kept and read in a Sylius back office, spam checks without third party (ddd-antispam-bundle, reCAPTCHA v3 optional), notices through ddd-notification-bundle.",
   "type": "symfony-bundle",
   "license": "MIT",
   "authors": [
@@ -10,6 +10,7 @@
   ],
   "require": {
     "php": "^8.4",
+    "alexandrebulete/ddd-antispam-bundle": "^1.0",
     "alexandrebulete/ddd-doctrine-bridge": "^1.4",
     "alexandrebulete/ddd-foundation": "^1.6",
     "alexandrebulete/ddd-sylius-bundle": "^1.2",

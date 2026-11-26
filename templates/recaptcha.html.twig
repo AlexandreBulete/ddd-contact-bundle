@@ -1,24 +1,3 @@
-{# Include once, after the contact form, when reCAPTCHA v3 is enabled: asks
-   Google for a token on submit and puts it in the hidden field. Nothing is
-   loaded when reCAPTCHA is off. #}
-{% set site_key = contact_recaptcha_site_key() %}
-{% if site_key %}
-    <script src="https://www.google.com/recaptcha/api.js?render={{ site_key|url_encode }}" async defer></script>
-    <script>
-        document.querySelectorAll('form[data-contact-form]').forEach((form) => {
-            form.addEventListener('submit', (event) => {
-                const field = form.querySelector('[data-contact-recaptcha]');
-                if (!field || field.value || typeof grecaptcha === 'undefined') {
-                    return;
-                }
-                event.preventDefault();
-                grecaptcha.ready(() => {
-                    grecaptcha.execute({{ site_key|json_encode|raw }}, { action: 'contact' }).then((token) => {
-                        field.value = token;
-                        form.requestSubmit ? form.requestSubmit() : form.submit();
-                    });
-                });
-            });
-        });
-    </script>
-{% endif %}
+{# Kept for the templates that include it: reCAPTCHA now comes with
+   ddd-antispam-bundle, for every guarded form of the page. #}
+{{ include('@DddAntispam/recaptcha.html.twig') }}
