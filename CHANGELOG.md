@@ -1,3 +1,12 @@
+## [1.3.0] - 2026-11-27
+
+### 🚀 Features
+
+- Admin screens in cards, record title and status pill
+
+### 📚 Documentation
+
+- Update CHANGELOG.md for 1.2.0
 ## [1.2.0] - 2026-11-27
 
 ### 🚀 Features
