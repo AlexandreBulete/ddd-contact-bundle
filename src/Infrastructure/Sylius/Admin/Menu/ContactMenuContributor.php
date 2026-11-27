@@ -11,7 +11,6 @@ use AlexandreBulete\DddSyliusBundle\Admin\Menu\MenuContributorInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * "Contact": the messages, with how many wait unread, and the settings.
@@ -22,7 +21,6 @@ final readonly class ContactMenuContributor implements MenuContributorInterface
     public function __construct(
         private AuthorizationCheckerInterface $authorization,
         private QueryBusInterface $queryBus,
-        private TranslatorInterface $translator,
     ) {}
 
     public function contribute(ItemInterface $menu): void
@@ -42,10 +40,9 @@ final readonly class ContactMenuContributor implements MenuContributorInterface
                 /** @var int $new */
                 $new = $this->queryBus->ask(new CountNewContactMessagesQuery());
             }
-            $label = $this->translator->trans('contact.menu.messages');
             $root->addChild('contact_messages', ['route' => 'contact_admin_message_index'])
-                ->setLabel($new > 0 ? sprintf('%s (%d)', $label, $new) : $label)
-                ->setExtra('translation_domain', false);
+                ->setLabel('contact.menu.messages')
+                ->setExtra('badge', $new);
         }
         if ($settings) {
             $root->addChild('contact_settings', ['route' => 'contact_admin_settings_update', 'routeParameters' => ['id' => ContactSettings::KEY]])
