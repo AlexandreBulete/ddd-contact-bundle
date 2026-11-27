@@ -1,4 +1,8 @@
 contact:
+    section:
+        message: "The message"
+        handling: "Handling"
+        forward: "Forwarding"
     ui:
         messages: Messages
         message: message

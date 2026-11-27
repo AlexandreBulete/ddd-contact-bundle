@@ -41,7 +41,7 @@ class ContactMessageGrid extends AbstractGrid implements ResourceAwareGridInterf
             ->addField(StringField::create('senderName')->setLabel('contact.message.sender_name'))
             ->addField(StringField::create('senderEmail')->setLabel('contact.message.sender_email'))
             ->addField(StringField::create('subject')->setLabel('contact.message.subject'))
-            ->addField(StringField::create('statusLabel')->setLabel('contact.message.status')->setPath('statusLabel'))
+            ->addField(TwigField::create('status', '@DddSylius/admin/grid/field/status.html.twig')->setLabel('contact.message.status')->setPath('adminStatus'))
             ->addField(TwigField::create('spam', '@SyliusBootstrapAdminUi/shared/grid/field/boolean.html.twig')->setLabel('contact.message.spam')->setSortable(true))
             ->addActionGroup(ItemActionGroup::create(UpdateAction::create()->setLabel('contact.message.open'), DeleteAction::create()))
         ;

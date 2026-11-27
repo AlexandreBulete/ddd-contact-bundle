@@ -11,6 +11,8 @@ use AlexandreBulete\DddContactBundle\Infrastructure\Sylius\State\Processor\Delet
 use AlexandreBulete\DddContactBundle\Infrastructure\Sylius\State\Processor\UpdateContactMessageProcessor;
 use AlexandreBulete\DddContactBundle\Infrastructure\Sylius\State\Provider\ContactMessageItemProvider;
 use AlexandreBulete\DddContactBundle\Infrastructure\Symfony\Form\Admin\ContactMessageType;
+use AlexandreBulete\DddSyliusBundle\Admin\View\AdminRecordInterface;
+use AlexandreBulete\DddSyliusBundle\Admin\View\StatusBadge;
 use Sylius\Resource\Metadata\AsResource;
 use Sylius\Resource\Metadata\Delete;
 use Sylius\Resource\Metadata\Index;
@@ -35,7 +37,7 @@ use Symfony\Component\Uid\AbstractUid;
         new Index(grid: ContactMessageGrid::class),
     ],
 )]
-final class ContactMessageResource implements ResourceInterface
+final class ContactMessageResource implements ResourceInterface, AdminRecordInterface
 {
     public function __construct(
         public ?AbstractUid $id = null,
@@ -69,5 +71,23 @@ final class ContactMessageResource implements ResourceInterface
             spam: $message->spam,
             statusLabel: 'contact.message.status_' . $message->status->value,
         );
+    }
+
+    public function adminLabel(): ?string
+    {
+        return $this->subject !== null && $this->subject !== '' ? $this->subject : $this->senderName;
+    }
+
+    public function adminStatus(): StatusBadge
+    {
+        return $this->spam ? StatusBadge::danger('contact.message.spam') : new StatusBadge($this->statusLabel ?? 'contact.message.status_' . $this->status->value, match ($this->status) {
+            MessageStatus::New => StatusBadge::INFO,
+            default => StatusBadge::NEUTRAL,
+        });
+    }
+
+    public function adminPublicUrl(): ?string
+    {
+        return null;
     }
 }

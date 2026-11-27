@@ -15,6 +15,7 @@ final class ContactSettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('forwardTo', EmailType::class, [
+            'section' => 'forward',
             'label' => 'contact.settings.forward_to',
             'help' => 'contact.settings.forward_to_help',
             'required' => false,
@@ -23,6 +24,11 @@ final class ContactSettingsType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['data_class' => ContactSettingsResource::class]);
+        $resolver->setDefaults([
+            'data_class' => ContactSettingsResource::class,
+            'sections' => [
+                'forward' => ['label' => 'contact.section.forward'],
+            ],
+        ]);
     }
 }

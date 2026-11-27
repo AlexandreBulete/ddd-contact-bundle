@@ -23,16 +23,19 @@ final class ContactMessageType extends AbstractType
     {
         $readOnly = ['disabled' => true, 'required' => false];
         $builder
-            ->add('senderName', TextType::class, ['label' => 'contact.message.sender_name'] + $readOnly)
-            ->add('senderEmail', TextType::class, ['label' => 'contact.message.sender_email'] + $readOnly)
-            ->add('subject', TextType::class, ['label' => 'contact.message.subject'] + $readOnly)
-            ->add('body', TextareaType::class, ['label' => 'contact.message.body', 'attr' => ['rows' => 12]] + $readOnly)
+            ->add('senderName', TextType::class, ['section' => 'message', 'span' => 'half', 'label' => 'contact.message.sender_name'] + $readOnly)
+            ->add('senderEmail', TextType::class, ['section' => 'message', 'span' => 'half', 'label' => 'contact.message.sender_email'] + $readOnly)
+            ->add('subject', TextType::class, ['section' => 'message', 'label' => 'contact.message.subject'] + $readOnly)
+            ->add('body', TextareaType::class, ['section' => 'message', 'label' => 'contact.message.body', 'attr' => ['rows' => 12]] + $readOnly)
             ->add('status', EnumType::class, [
+                'section' => 'handling',
                 'class' => MessageStatus::class,
                 'label' => 'contact.message.status',
                 'choice_label' => static fn (MessageStatus $status): string => 'contact.message.status_' . $status->value,
             ])
             ->add('spam', CheckboxType::class, [
+                'section' => 'handling',
+                'switch' => true,
                 'label' => 'contact.message.spam',
                 'help' => 'contact.message.spam_help',
                 'required' => false,
@@ -41,6 +44,12 @@ final class ContactMessageType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['data_class' => ContactMessageResource::class]);
+        $resolver->setDefaults([
+            'data_class' => ContactMessageResource::class,
+            'sections' => [
+                'message' => ['label' => 'contact.section.message'],
+                'handling' => ['label' => 'contact.section.handling', 'column' => 'side'],
+            ],
+        ]);
     }
 }
